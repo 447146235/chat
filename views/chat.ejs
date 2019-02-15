@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>首页</title>
+		<link rel="stylesheet" type="text/css" href="/bootstrap.min.css"/>
+		<style>
+			body{
+				background:rgb(0, 149, 84);
+				color:#fff;
+				font-size:14px;
+			}
+			.edit{
+				width:100%;
+				position:fixed;
+				bottom:0;
+				
+			}
+			#content{
+				width:93%;
+			}
+			
+		</style>
+	</head>
+	<body>
+		<h2 class="col-md-offset-4">欢迎来到聊天室，大家畅所欲言</h2>
+		<span class="col-md-offset-5">欢迎</span>
+		<span id="username" class=""> <%=username%></span>
+		<span>来到聊天室</span>
+		<div class="container">
+			<ul class="list-group" id="list">
+				
+			</ul>
+		</div>
+		<div class ="edit">
+			<div class="form-inline">
+				<input type="text" class="form-control" id="content" placeholder="输入你想说的东西,点击按钮发送">
+				<button type="button" class="btn btn-success" id="tijiao">发送信息</button>
+			</div>
+		</div>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="http://libs.baidu.com/jquery/2.1.1/jquery.min.js"></script>
+		
+		<script>
+			var socket=io();
+			//点击按钮提交
+			$("#tijiao").click(function(){
+				 socket.emit("chat",{
+					 "content":$("#content").val(),
+					 "user":$("#username").html()
+				 }); 
+			});
+			
+			
+			//enter提交
+			$("#content").keydown(function(e){
+				if(e.keycode==13){
+					socket.emit("chat",{
+						"content":$("#content").val(),
+					    "user":$("#username").html()
+					}); 
+				}
+			});
+			socket.on("chat",function(msg){
+				console.log(msg);
+				$("#list").prepend("<li class='list-group-item list-group-item-info'><b>"+msg.user+": </b>"+msg.content+"</li>");
+			});
+			
+		</script>
+	</body>
+</html>	
